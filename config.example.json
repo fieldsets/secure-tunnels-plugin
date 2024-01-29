@@ -1,0 +1,15 @@
+{
+    "retries": 1,
+    "fowards": [
+        {
+            "local_host": "0.0.0.0",
+            "local_port": "5432",
+            "remote_port": "5433",
+            "ssh_host": "host.docker.internal",
+            "ssh_port": "22",
+            "ssh_user": "root",
+            "ssh_key": "id_rsa",
+            "tunnel_type": "remote"
+        }
+    ]
+}

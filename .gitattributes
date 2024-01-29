@@ -1,0 +1,11 @@
+* text=auto
+
+*.gitattributes eol=lf
+*.gitignore eol=lf
+*.gitmodules eol=lf
+*.sh eol=lf
+*.json eol=lf
+*.sql eol=lf
+*.conf eol=lf
+*.yml eol=lf
+*.ps1 eol=crlf

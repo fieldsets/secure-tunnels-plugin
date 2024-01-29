@@ -1,0 +1,2 @@
+# Fieldsets Plugin: Secure Tunnels
+This plugin sets up SSH tunnels between a fieldsets-local container and a specified destination. You can specify multiple ports and the port forwarding approach (local, remote or dynamic). This plugin extends the fieldsets-local container.
