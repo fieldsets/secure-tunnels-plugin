@@ -1,0 +1,6 @@
+{
+    "schemas":[],
+    "plugins":[],
+    "packages":["autossh","openssh-client"],
+    "config": {}
+}

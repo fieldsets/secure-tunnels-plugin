@@ -1,5 +1,6 @@
 #!/usr/bin/env pwsh
-$plugin_path = [System.IO.Path]::GetFullPath("./")
+
+$plugin_path = (Get-Location).Path
 $ssh_key_path = [System.Environment]::GetEnvironmentVariable('SSH_KEY_PATH')
 $home_path = [System.Environment]::GetEnvironmentVariable('HOME')
 
@@ -12,7 +13,7 @@ if ($ssh_key_path -eq $null) {
 Write-Output "## Secure Tunnels Plugin Config Script ##"
 Write-Output "$($plugin_path)"
 
-$config = Get-Content -Raw -Path "$($plugin_path)config.json" | ConvertFrom-Json
+$config = Get-Content -Raw -Path "$($plugin_path)/config.json" | ConvertFrom-Json
 
 $retries = $config.retries
 $auto_ssh_port = 40000
@@ -70,7 +71,7 @@ foreach ($forward in $config.forwards) {
             }
 
             $key = [System.IO.Path]::GetFullPath((Join-Path -Path $ssh_key_path -ChildPath $forward.ssh_key))
-            $log_path = '/data/logs/tunnels/'
+            $log_path = '/data/logs/plugins/secure-tunnels/'
             # Build our autossh command
             [Environment]::SetEnvironmentVariable('AUTOSSH_POLL', 600)
             [Environment]::SetEnvironmentVariable('AUTOSSH_PORT', $auto_ssh_port)
@@ -81,8 +82,15 @@ foreach ($forward in $config.forwards) {
             mkdir -p "$($log_path)"
 
             Write-Output "Setting up SSH tunnel."
-            $ssh_cmd = "bash -c `"autossh -2 -fN -M $($auto_ssh_port) -o 'ServerAliveInterval=60' -o 'ServerAliveCountMax=2' -o 'StrictHostKeyChecking=no' -4 -o 'IdentitiesOnly=yes' -i $($key) $($tunnel_type) $($forward_cmd) -tt $($forward.ssh_user)@$($forward.ssh_host) -p $($forward.ssh_port) &`""
-            Start-Process nohup "$($ssh_cmd)"
+            $ssh_cmd = "bash -c `"autossh -2 -fN -M $($auto_ssh_port) -o 'ServerAliveInterval=60' -o 'ServerAliveCountMax=2' -o 'StrictHostKeyChecking=no' -4 -o 'IdentitiesOnly=yes' -i $($key) $($tunnel_type) $($forward_cmd) -tt $($forward.ssh_user)@$($forward.ssh_host) -p $($forward.ssh_port)`""
+            $processOptions = @{
+                Filepath ="nohup"
+                ArgumentList = "$($ssh_cmd)"
+                RedirectStandardInput = "/dev/null"
+                RedirectStandardOutput = "$($log_path)/config.log"
+                RedirectStandardError = "$($log_path)/config_error.log"
+            }
+            Start-Process @processOptions
             $auto_ssh_port = $auto_ssh_port + 1
         } else {
             Write-Error "The following tunnel has inactive ssh host connections. If on a slow connection, increase the number of retries. Skipping."
