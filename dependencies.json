@@ -1,6 +1,5 @@
 {
-    "schemas":[],
     "plugins":[],
     "packages":["autossh","openssh-client"],
-    "config": {}
+    "containers":["fieldsets-local"]
 }

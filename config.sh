@@ -103,3 +103,5 @@ foreach ($forward in $config.forwards) {
     }
 }
 
+Exit
+Exit-PSHostProcess
