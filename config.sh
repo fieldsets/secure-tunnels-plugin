@@ -10,8 +10,6 @@ if ($ssh_key_path -eq $null) {
     $ssh_key_path = $ssh_key_path.Replace('~', "$($home_path)")
 }
 
-
-
 Write-Output "## Secure Tunnels Plugin Config Script ##"
 Write-Output "$($plugin_path)"
 
