@@ -2,7 +2,8 @@
     "name": "Fieldsets Secure Tunnels Plugin",
     "token": "secure-tunnels-plugin",
     "url": "https://github.com/fieldsets/secure-tunnels-plugin",
-    "priority": "05",
     "version": "1.0.0",
+    "license": "AGPL-3.0",
+    "priority": "05",
     "enabled": true
 }
