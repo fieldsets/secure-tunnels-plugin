@@ -1,5 +1,8 @@
 {
-    "name": "Fieldsets Secure Tunnels",
-    "token": "secure-tunnels",
-    "version": "1.0.0"
+    "name": "Fieldsets Secure Tunnels Plugin",
+    "token": "secure-tunnels-plugin",
+    "url": "https://github.com/fieldsets/secure-tunnels-plugin",
+    "priority": "05",
+    "version": "1.0.0",
+    "enabled": true
 }
