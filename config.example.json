@@ -6,7 +6,7 @@
             "local_port": "5432",
             "remote_port": "5433",
             "ssh_host": "host.docker.internal",
-            "ssh_port": "22",
+            "ssh_port": "1022",
             "ssh_user": "root",
             "ssh_key": "id_rsa",
             "tunnel_type": "remote"

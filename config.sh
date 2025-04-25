@@ -27,12 +27,6 @@ if (Test-Path -Path "$($plugin_path)/config.json") {
     if (!(Test-Path -Path "$($log_path)secure_tunnels.log")) {
         New-Item -Path "$($log_path)" -Name "secure_tunnels.log" -ItemType File | Out-Null
     }
-    if (!(Test-Path -Path "$($log_path)config.log")) {
-        New-Item -Path "$($log_path)" -Name "config.log" -ItemType File | Out-Null
-    }
-    if (!(Test-Path -Path "$($log_path)config_error.log")) {
-        New-Item -Path "$($log_path)" -Name "config_error.log" -ItemType File | Out-Null
-    }
 
     # Build our autossh command
     [Environment]::SetEnvironmentVariable('AUTOSSH_POLL', 600)
@@ -42,6 +36,7 @@ if (Test-Path -Path "$($plugin_path)/config.json") {
     [Environment]::SetEnvironmentVariable('AUTOSSH_LOG_PATH', "$($log_path)")
     [Environment]::SetEnvironmentVariable('AUTOSSH_LOGFILE', "$($log_path)secure_tunnels.log")
 
+    Write-Output "Setting up SSH tunnels."
     foreach ($forward in $config.forwards) {
         $tunnel_type = ''
         $forward_cmd = ''
@@ -96,14 +91,15 @@ if (Test-Path -Path "$($plugin_path)/config.json") {
                 }
 
                 $key = [System.IO.Path]::GetFullPath((Join-Path -Path $ssh_key_path -ChildPath $forward.ssh_key))
-                Write-Output "Setting up SSH tunnel."
+
+                $nohup = (Get-Command nohup).Source
                 $ssh_cmd = "bash -c `"autossh -2 -fN -M $($auto_ssh_port) -o 'ServerAliveInterval=60' -o 'ServerAliveCountMax=2' -o 'StrictHostKeyChecking=no' -4 -o 'IdentitiesOnly=yes' -i $($key) $($tunnel_type) $($forward_cmd) -tt $($forward.ssh_user)@$($forward.ssh_host) -p $($forward.ssh_port)`""
                 $processOptions = @{
-                    Filepath ="nohup"
+                    Filepath = $nohup
                     ArgumentList = "$($ssh_cmd)"
                     RedirectStandardInput = "/dev/null"
-                    RedirectStandardOutput = "$($log_path)config.log"
-                    RedirectStandardError = "$($log_path)config_error.log"
+                    RedirectStandardError = "/dev/tty"
+                    RedirectStandardOutput = "$($log_path)secure_tunnels.log"
                 }
                 Start-Process @processOptions
                 $auto_ssh_port = $auto_ssh_port + 1
